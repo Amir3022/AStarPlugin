@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "GridGeneratorWIthAStarPathfinder",
+	"Description": "Plugin which create a 2D Grid to be used on a flat map. With pathfinder actor component that implements AStar algorithm to find the shortest path between 2 nodes on the grid. Map Generator Class to spawn random obstacles on the grid and select 2 random nodes on the grid and find shortest path between them.",
+	"Category": "Other",
+	"CreatedBy": "Amir3022",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "GridGeneratorWIthAStarPathfinder",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
