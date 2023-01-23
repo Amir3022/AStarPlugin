@@ -38,13 +38,17 @@ public:
 	// Editor changable variable, to set the Grid used in this class
 	UPROPERTY(EditAnywhere, Category = "Grid")
 		AGrid* Grid;
-	// Editor changable variable, defining the number of spawned obstacles
-	UPROPERTY(EditAnywhere, Category = "Obstacles Generation")
-		int32 nObstacles = 1;
+	// Editor changable variable, defining the number of spawned blocking objects
+	UPROPERTY(EditAnywhere, Category = "Objects Generation")
+		int32 nBlockingObstacles = 1;
+	// Editor changable variable, defining the number of spawned nonblocking objects
+	UPROPERTY(EditAnywhere, Category = "Objects Generation")
+		int32 nNonblockingObstacles = 1;
 
 private:
 	USceneComponent* DefaultSceneComponent;				// Scene Component to be used root component for this class
 	UPathfinder* PathfinderComponent;					// Pointer to Pathfinder actor component to be added to this actor class
-	TArray<UStaticMesh*> ObstacleShapes;				// TArray of static meshes models to be spawned by the SpawnObstacles function
+	UStaticMesh* BlockingObstacleShape;					// Blocking Static mesh model to be spawned by the SpawnObstacles function, to be set as cube that totally blocks path
+	UStaticMesh* NonBlockingObstacleShape;				// Nonblocking Static mesh model to be spawned by the SpawnObstacles function, to be set as wall with open entrance that doesn't block path
 	TArray<AActor*> SpawnedMeshes;						// TArray holding the spawned Static Mesh actors
 };

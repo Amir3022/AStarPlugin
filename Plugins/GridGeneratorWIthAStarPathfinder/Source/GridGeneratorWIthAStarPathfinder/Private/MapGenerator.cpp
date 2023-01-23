@@ -14,15 +14,11 @@ AMapGenerator::AMapGenerator()
 	// Creating the Pathfinder Actor Component and adding as an owned component to this class
 	PathfinderComponent = CreateDefaultSubobject<UPathfinder>(TEXT("Pathfinder Component"));
 	AddOwnedComponent(PathfinderComponent);
-	// Using ConstructorHelperd ObjectFinder to get the basic shapes meshes, and add them to the ObstacleShapes array
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereAsset(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
-	ObstacleShapes.Add(SphereAsset.Object);
+	// Using ConstructorHelperd ObjectFinder to get the basic shapes meshes
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeAsset(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
-	ObstacleShapes.Add(CubeAsset.Object);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeAsset(TEXT("StaticMesh'/Engine/BasicShapes/Cone.Cone'"));
-	ObstacleShapes.Add(ConeAsset.Object);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderAsset(TEXT("StaticMesh'/Engine/BasicShapes/Cylinder.Cylinder'"));
-	ObstacleShapes.Add(CylinderAsset.Object);
+	BlockingObstacleShape = CubeAsset.Object;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DoorAsset(TEXT("StaticMesh'/GridGeneratorWithAStarPathfinder/Mesh/Wall_Door_400x300.Wall_Door_400x300'"));
+	NonBlockingObstacleShape = DoorAsset.Object;
 }
 
 void AMapGenerator::OnConstruction(const FTransform& Transform)
@@ -109,8 +105,8 @@ void AMapGenerator::SpawnObstacles()
 	float minY = BottomLeftLocation.Y;
 	float maxY = TopRightLocation.Y;
 	float locZ = Grid->GetActorLocation().Z;
-	// Spawn number of static mesh actors to be used as obstacles equal to nObstacles
-	for (int32 i = 0; i < nObstacles; i++)
+	// Spawn number of static mesh actors to be used as obstacles equal to nBlockingObstacles
+	for (int32 i = 0; i < nBlockingObstacles; i++)
 	{
 		// Get random spawn location in the bounds of bottom left and top right locations
 		FVector SpawnLocation = FVector(UKismetMathLibrary::RandomFloatInRange(minX, maxX), UKismetMathLibrary::RandomFloatInRange(minY, maxY), locZ);
@@ -120,15 +116,38 @@ void AMapGenerator::SpawnObstacles()
 		if (SpawnedMesh)
 		{
 			FVector MeshScale = FVector(UKismetMathLibrary::RandomFloatInRange(1, 5), UKismetMathLibrary::RandomFloatInRange(1, 5), 3.0f);
-			// Set static mesh to be one of the static meshed in ObstacleMeshes (Currently only Cube is used from the array which has index = 1)
-			SpawnedMesh->GetStaticMeshComponent()->SetStaticMesh(ObstacleShapes[1]);
+			// Set static mesh to be BlockingObstacleMesh
+			SpawnedMesh->GetStaticMeshComponent()->SetStaticMesh(BlockingObstacleShape);
 			SpawnedMesh->GetStaticMeshComponent()->SetWorldScale3D(MeshScale);
 			// Add the spawed static mesh actor to the SpawnedMeshes array
 			SpawnedMeshes.Add(SpawnedMesh);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("Failed to Spawn mesh"));
+			UE_LOG(LogTemp, Error, TEXT("Failed to Spawn Blocking mesh"));
+		}
+	}
+	// Spawn number of static mesh actors to be used as non-blocking objects equal to nNonblockingObstacles
+	for (int32 i = 0; i < nNonblockingObstacles; i++)
+	{
+		// Get random spawn location in the bounds of bottom left and top right locations
+		FVector SpawnLocation = FVector(UKismetMathLibrary::RandomFloatInRange(minX, maxX), UKismetMathLibrary::RandomFloatInRange(minY, maxY), locZ);
+		// Spawn static mesh actor in the random spawn location
+		AStaticMeshActor* SpawnedMesh = GetWorld()->SpawnActor<AStaticMeshActor>(SpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		// If Static Mesh actor successully spawned randomize it's scale in the x and y directions
+		if (SpawnedMesh)
+		{
+			// Get Random rotator for the spawned mesh
+			FRotator MeshRotator = FRotator(0.0f, UKismetMathLibrary::RandomBool() * 90.0f, 0.0f);
+			// Set static mesh to be NonBlockingObstacleMesh
+			SpawnedMesh->GetStaticMeshComponent()->SetStaticMesh(NonBlockingObstacleShape);
+			SpawnedMesh->GetStaticMeshComponent()->SetWorldRotation(MeshRotator);
+			// Add the spawed static mesh actor to the SpawnedMeshes array
+			SpawnedMeshes.Add(SpawnedMesh);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to Spawn Nonblocking mesh"));
 		}
 	}
 }
