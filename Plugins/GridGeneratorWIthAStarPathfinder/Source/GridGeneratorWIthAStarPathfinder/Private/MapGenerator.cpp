@@ -141,7 +141,9 @@ void AMapGenerator::SpawnObstacles()
 			FRotator MeshRotator = FRotator(0.0f, UKismetMathLibrary::RandomBool() * 90.0f, 0.0f);
 			// Set static mesh to be NonBlockingObstacleMesh
 			SpawnedMesh->GetStaticMeshComponent()->SetStaticMesh(NonBlockingObstacleShape);
-			SpawnedMesh->GetStaticMeshComponent()->SetWorldRotation(MeshRotator);
+			SpawnedMesh->GetStaticMeshComponent()->Mobility = EComponentMobility::Movable;
+			SpawnedMesh->SetActorScale3D(FVector(1.5f, 5.0f, 1.0f));
+			SpawnedMesh->SetActorRotation(MeshRotator);
 			// Add the spawed static mesh actor to the SpawnedMeshes array
 			SpawnedMeshes.Add(SpawnedMesh);
 		}
