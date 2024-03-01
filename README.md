@@ -20,4 +20,6 @@ This Repo contains implementation of the “GridGeneratorWithAStarPathfinder” 
 
 
 ## Video Demonstration
-![Video](Video/VideoDemo.mp4)
+
+https://github.com/Amir3022/AStarPlugin/assets/61204665/a54fd206-824e-4f6c-b595-285aa36e7772
+
