@@ -20,4 +20,4 @@ This Repo contains implementation of the “GridGeneratorWithAStarPathfinder” 
 
 
 ## Video Demonstration
-![](Video/Path)
+![](Video/VideoDemo.mp4)
